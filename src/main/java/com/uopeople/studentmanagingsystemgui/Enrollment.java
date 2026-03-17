@@ -1,4 +1,4 @@
-package com.studentmanagement;
+package com.uopeople.studentmanagingsystemgui;
 
 import javafx.beans.property.SimpleStringProperty;
 

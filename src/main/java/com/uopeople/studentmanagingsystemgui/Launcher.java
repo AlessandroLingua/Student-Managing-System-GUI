@@ -1,9 +1,10 @@
 package com.uopeople.studentmanagingsystemgui;
 
-import javafx.application.Application;
-
+/**
+ * Launcher is the entry point for the application.
+ */
 public class Launcher {
     public static void main(String[] args) {
-        Application.launch(HelloApplication.class, args);
+        StudentManagementApp.main(args);
     }
 }
