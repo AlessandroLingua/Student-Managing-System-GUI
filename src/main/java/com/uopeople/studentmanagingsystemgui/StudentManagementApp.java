@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * course enrollments, and grades. Built with JavaFX, it uses event-driven
  * programming to handle all user interactions dynamically.
  *
- * Design rationale:
+ * Design logic:
  * - TabPane organizes the three major functional areas (Students, Enrollment, Grades)
  *   into separate, clearly labeled tabs for intuitive navigation.
  * - TableView with ObservableList ensures dynamic updates: any changes to the
@@ -29,18 +29,13 @@ import java.util.stream.Collectors;
  * - Dialog-based forms (TextInputDialog, custom dialogs) keep the main interface
  *   uncluttered while providing focused data-entry experiences.
  * - ComboBox dropdowns give administrators quick selection of students and courses,
- *   reducing input errors compared to free-text entry.
- * - MenuBar provides an alternative navigation path for power users who prefer
+ *   reducing input errors.
+ * - MenuBar provides an alternative navigation path for users who prefer
  *   keyboard shortcuts and menu-driven workflows.
- *
- * @author Student Name
- * @version 1.0
  */
 public class StudentManagementApp extends Application {
 
-    // ──────────────────────────────────────────────────
     // Observable collections – the single source of truth
-    // ──────────────────────────────────────────────────
     private final ObservableList<Student> studentList = FXCollections.observableArrayList();
     private final ObservableList<Course> courseList = FXCollections.observableArrayList();
     private final ObservableList<Enrollment> enrollmentList = FXCollections.observableArrayList();
@@ -67,13 +62,13 @@ public class StudentManagementApp extends Application {
         // Initialize sample data so the application is not empty on launch
         initializeSampleData();
 
-        // ── Root layout ──
+        // Root layout
         BorderPane root = new BorderPane();
         root.setTop(createMenuBar(primaryStage));
         root.setCenter(createMainContent());
         root.setBottom(createStatusBar());
 
-        // ── Scene and stage ──
+        // Scene and stage
         Scene scene = new Scene(root, 900, 650);
         primaryStage.setTitle("Student Management System");
         primaryStage.setScene(scene);
@@ -84,23 +79,20 @@ public class StudentManagementApp extends Application {
         updateStatus("Application loaded. Ready.");
     }
 
-    // ================================================================
-    //  MENU BAR – provides menu-driven access to all major actions
-    // ================================================================
-
+    // MENU BAR – provides menu-driven access to all major actions
     /**
      * Creates the top menu bar with File, Student, Course, and Help menus.
      * Each MenuItem is wired to the same logic as its corresponding button,
      * ensuring consistency between menu and button interactions.
      */
     private MenuBar createMenuBar(Stage stage) {
-        // ── File menu ──
+        // File menu
         MenuItem exitItem = new MenuItem("Exit");
         exitItem.setOnAction(e -> stage.close());
         Menu fileMenu = new Menu("File");
         fileMenu.getItems().add(exitItem);
 
-        // ── Student menu ──
+        // Student menu
         MenuItem addStudentItem = new MenuItem("Add Student");
         addStudentItem.setOnAction(e -> handleAddStudent());
         MenuItem updateStudentItem = new MenuItem("Update Student");
@@ -108,13 +100,13 @@ public class StudentManagementApp extends Application {
         Menu studentMenu = new Menu("Student");
         studentMenu.getItems().addAll(addStudentItem, updateStudentItem);
 
-        // ── Course menu ──
+        // Course menu
         MenuItem enrollItem = new MenuItem("Enroll Student");
         enrollItem.setOnAction(e -> handleEnrollStudent());
         Menu courseMenu = new Menu("Course");
         courseMenu.getItems().add(enrollItem);
 
-        // ── Help menu ──
+        // Help menu
         MenuItem aboutItem = new MenuItem("About");
         aboutItem.setOnAction(e -> showAboutDialog());
         Menu helpMenu = new Menu("Help");
@@ -123,10 +115,7 @@ public class StudentManagementApp extends Application {
         return new MenuBar(fileMenu, studentMenu, courseMenu, helpMenu);
     }
 
-    // ================================================================
-    //  MAIN CONTENT – TabPane with three functional areas
-    // ================================================================
-
+    // MAIN CONTENT – TabPane with three functional areas
     /**
      * Creates the central TabPane with Student Management, Course Enrollment,
      * and Grade Management tabs.
@@ -149,10 +138,7 @@ public class StudentManagementApp extends Application {
         return tabPane;
     }
 
-    // ================================================================
-    //  TAB 1 – STUDENT MANAGEMENT
-    // ================================================================
-
+    // TAB 1 – STUDENT MANAGEMENT
     /**
      * Builds the Student Management tab with a TableView displaying all
      * students and buttons for Add, Update, Delete, and View Details.
@@ -166,7 +152,7 @@ public class StudentManagementApp extends Application {
         Label title = new Label("Student Records");
         title.setFont(Font.font("System", FontWeight.BOLD, 18));
 
-        // ── Student TableView ──
+        //  Student TableView
         studentTable = new TableView<>();
         studentTable.setItems(studentList);
         studentTable.setPlaceholder(new Label("No students in the system."));
@@ -190,7 +176,7 @@ public class StudentManagementApp extends Application {
         studentTable.getColumns().addAll(idCol, nameCol, emailCol, majorCol);
         VBox.setVgrow(studentTable, Priority.ALWAYS);
 
-        // ── Button bar ──
+        //  Button bar
         Button addBtn = new Button("Add Student");
         addBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
         addBtn.setOnAction(e -> handleAddStudent());
@@ -214,10 +200,7 @@ public class StudentManagementApp extends Application {
         return vbox;
     }
 
-    // ================================================================
-    //  TAB 2 – COURSE ENROLLMENT
-    // ================================================================
-
+    // TAB 2 – COURSE ENROLLMENT
     /**
      * Builds the Course Enrollment tab with ComboBox dropdowns for selecting
      * a student and a course, an Enroll button, and a table showing all
@@ -231,7 +214,7 @@ public class StudentManagementApp extends Application {
         Label title = new Label("Course Enrollment");
         title.setFont(Font.font("System", FontWeight.BOLD, 18));
 
-        // ── Selection controls ──
+        // Selection controls
         Label studentLabel = new Label("Select Student:");
         enrollStudentCombo = new ComboBox<>(studentList);
         enrollStudentCombo.setPromptText("Choose a student...");
@@ -255,7 +238,7 @@ public class StudentManagementApp extends Application {
         form.add(enrollCourseCombo, 1, 1);
         form.add(enrollBtn, 1, 2);
 
-        // ── Enrollment TableView ──
+        // Enrollment TableView
         Label tableTitle = new Label("Current Enrollments");
         tableTitle.setFont(Font.font("System", FontWeight.BOLD, 14));
 
@@ -282,10 +265,7 @@ public class StudentManagementApp extends Application {
         return vbox;
     }
 
-    // ================================================================
     //  TAB 3 – GRADE MANAGEMENT
-    // ================================================================
-
     /**
      * Builds the Grade Management tab with ComboBoxes for selecting a student
      * and their enrolled course, a ComboBox for grade selection, and a table
@@ -299,13 +279,13 @@ public class StudentManagementApp extends Application {
         Label title = new Label("Grade Management");
         title.setFont(Font.font("System", FontWeight.BOLD, 18));
 
-        // ── Student selection ──
+        // Student selection
         Label studentLabel = new Label("Select Student:");
         gradeStudentCombo = new ComboBox<>(studentList);
         gradeStudentCombo.setPromptText("Choose a student...");
         gradeStudentCombo.setPrefWidth(300);
 
-        // ── Course selection (filtered by student enrollment) ──
+        // Course selection (filtered by student enrollment)
         Label courseLabel = new Label("Enrolled Course:");
         gradeCourseCombo = new ComboBox<>();
         gradeCourseCombo.setPromptText("Select student first...");
@@ -330,7 +310,7 @@ public class StudentManagementApp extends Application {
             }
         });
 
-        // ── Grade selection ──
+        // Grade selection
         Label gradeLabel = new Label("Assign Grade:");
         ComboBox<String> gradeValueCombo = new ComboBox<>(
             FXCollections.observableArrayList("A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F")
@@ -353,7 +333,7 @@ public class StudentManagementApp extends Application {
         form.add(gradeValueCombo, 1, 2);
         form.add(assignBtn, 1, 3);
 
-        // ── Grade display table ──
+        // Grade display table
         Label tableTitle = new Label("Student Grades");
         tableTitle.setFont(Font.font("System", FontWeight.BOLD, 14));
 
@@ -375,10 +355,7 @@ public class StudentManagementApp extends Application {
         return vbox;
     }
 
-    // ================================================================
-    //  STATUS BAR
-    // ================================================================
-
+    // STATUS BAR
     private HBox createStatusBar() {
         statusLabel = new Label("Ready");
         statusLabel.setFont(Font.font("System", 12));
@@ -394,10 +371,7 @@ public class StudentManagementApp extends Application {
         }
     }
 
-    // ================================================================
-    //  EVENT HANDLERS – Student Management
-    // ================================================================
-
+    // EVENT HANDLERS – Student Management
     /**
      * Handles the Add Student action. Opens a custom dialog with text fields
      * for entering the student's name, email, and major. Validates input
@@ -441,7 +415,7 @@ public class StudentManagementApp extends Application {
                 String email = emailField.getText().trim();
                 String major = majorField.getText().trim();
 
-                // ── Input validation ──
+                //  Input validation
                 if (name.isEmpty() || email.isEmpty() || major.isEmpty()) {
                     showError("Validation Error", "All fields are required. Please fill in every field.");
                     return null;
@@ -591,10 +565,7 @@ public class StudentManagementApp extends Application {
         info.showAndWait();
     }
 
-    // ================================================================
-    //  EVENT HANDLERS – Course Enrollment
-    // ================================================================
-
+    // EVENT HANDLERS – Course Enrollment
     /**
      * Handles the Enroll Student action. Validates that both a student and
      * course are selected, checks for duplicate enrollment, and creates
@@ -644,10 +615,7 @@ public class StudentManagementApp extends Application {
         enrollCourseCombo.setValue(null);
     }
 
-    // ================================================================
     //  EVENT HANDLERS – Grade Management
-    // ================================================================
-
     /**
      * Handles the Assign Grade action. Validates selections, finds the
      * matching Enrollment record, and updates its grade property. Because
@@ -683,10 +651,7 @@ public class StudentManagementApp extends Application {
         }
     }
 
-    // ================================================================
-    //  HELPER METHODS
-    // ================================================================
-
+    // HELPER METHODS
     /**
      * Refreshes the grade table to show only enrollments for the specified student.
      */
@@ -729,8 +694,7 @@ public class StudentManagementApp extends Application {
         about.setContentText(
             "A JavaFX GUI application for managing student records,\n"
             + "course enrollments, and grades.\n\n"
-            + "Built with JavaFX using event-driven programming.\n"
-            + "CS Course Assignment - University of the People");
+            + "Built with JavaFX.");
         about.showAndWait();
     }
 
@@ -740,21 +704,16 @@ public class StudentManagementApp extends Application {
      */
     private void initializeSampleData() {
         // Sample students
-        studentList.add(new Student(nextStudentId++, "Alice Johnson", "alice@example.com", "Computer Science"));
-        studentList.add(new Student(nextStudentId++, "Bob Smith", "bob@example.com", "Mathematics"));
-        studentList.add(new Student(nextStudentId++, "Carol Davis", "carol@example.com", "Physics"));
+        studentList.add(new Student(nextStudentId++, "Alessandro Lingua", "a.lingua@uopeople.com", "Computer Science"));
+        studentList.add(new Student(nextStudentId++, "Martina Pernice", "m.pernice@uopeople.com", "Law"));
+        studentList.add(new Student(nextStudentId++, "Alex David", "a.david@uopeople.com", "Computer Science"));
 
         // Sample courses
         courseList.add(new Course(101, "Introduction to Programming", 30));
-        courseList.add(new Course(102, "Data Structures", 25));
-        courseList.add(new Course(103, "Calculus I", 35));
-        courseList.add(new Course(104, "Linear Algebra", 30));
-        courseList.add(new Course(105, "Database Systems", 25));
-
-        // Sample enrollments
-        enrollmentList.add(new Enrollment(studentList.get(0), courseList.get(0)));
-        enrollmentList.add(new Enrollment(studentList.get(0), courseList.get(1)));
-        enrollmentList.add(new Enrollment(studentList.get(1), courseList.get(2)));
+        courseList.add(new Course(102, "English Composition 2", 25));
+        courseList.add(new Course(103, "Algebra I", 35));
+        courseList.add(new Course(104, "Statistics", 30));
+        courseList.add(new Course(105, "Programming 1", 25));
     }
 
     /**
