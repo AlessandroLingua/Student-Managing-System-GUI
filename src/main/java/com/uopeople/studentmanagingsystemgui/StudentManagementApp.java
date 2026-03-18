@@ -709,16 +709,16 @@ public class StudentManagementApp extends Application {
         studentList.add(new Student(nextStudentId++, "Alex David", "a.david@uopeople.com", "Computer Science"));
 
         // Sample courses
-        courseList.add(new Course(101, "Introduction to Programming", 30));
-        courseList.add(new Course(102, "English Composition 2", 25));
+        courseList.add(new Course(101, "Introduction to Programming", 2));
+        courseList.add(new Course(102, "English Composition 2", 10));
         courseList.add(new Course(103, "Algebra I", 35));
         courseList.add(new Course(104, "Statistics", 30));
         courseList.add(new Course(105, "Programming 1", 25));
+        courseList.add(new Course(105, "Law and Legislation", 25));
     }
 
     /**
      * Main method – delegates to the Launcher class for JDK 11+ compatibility.
-     * When running directly, this method can be used as a fallback.
      */
     public static void main(String[] args) {
         launch(args);
